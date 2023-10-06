@@ -1,0 +1,9 @@
+version: '3'
+services:
+  someRPServer:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - Origin=0.0.0.0:30120
+      - Port=80
