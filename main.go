@@ -19,9 +19,6 @@ func main() {
 		return
 	}
 
-	
-	
-
 	http.HandleFunc("/", func(responde http.ResponseWriter, request *http.Request) {
 		if !strings.Contains(request.URL.Path, "resource.rpf") {
 			log.Print(request.RemoteAddr+" --> localhost"+request.URL.Path)
@@ -32,8 +29,6 @@ func main() {
 
 		hash := request.URL.Query().Get("hash")
 		resource := UrlToResource(request.URL.Path)
-
-
 		cache := ReadCacheFile(resource, hash)
 
 		io.WriteString(responde, cache)
@@ -70,6 +65,7 @@ func ReadCacheFile(folder, hash string) string {
 	if os.IsNotExist(err) {
 		log.Print("Creating new cache row for resource: "+folder+" hash: ["+hash+"]")
 
+
 		// deleting folder
 		_, err := os.Stat(folderPath)
 		if err == nil {
@@ -78,6 +74,7 @@ func ReadCacheFile(folder, hash string) string {
 				log.Print(err)
 			}
 		}
+
 
 		// creating new folder
 		err = os.MkdirAll(folderPath, os.ModePerm)
@@ -98,12 +95,14 @@ func ReadCacheFile(folder, hash string) string {
 			log.Print(httpErr)
 		}
 
+
 		// creating new file
 		file, err := os.Create(mainPath)
 		if err != nil {
 			log.Print(err)
 		}
 		defer file.Close()
+
 
 		// copy content to new file
 		_, err = io.Copy(file, resp.Body)
@@ -112,8 +111,9 @@ func ReadCacheFile(folder, hash string) string {
 		}
 	}
 
-	data, err := os.ReadFile(mainPath)
 
+	// sending content to client
+	data, err := os.ReadFile(mainPath)
 	if err != nil {
 		log.Print(err)
 	}
